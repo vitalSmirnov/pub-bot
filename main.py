@@ -1,16 +1,17 @@
-# This is a sample Python script.
+from bot import app
+from quick_resto_integration import QuickResto
+from utils import scheduler, spreadsheet
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+if __name__ == "__main__":
+    quick_api = QuickResto(
+        app,
+        spreadsheet,
+    )
+    scheduler.add_job(quick_api.shift_manager, "interval", seconds=30)
+    scheduler.start()
 
+    try:
+        app.run()
+    except (KeyboardInterrupt, SystemExit):
+        scheduler.shutdown()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
