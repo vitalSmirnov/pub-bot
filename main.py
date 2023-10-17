@@ -1,5 +1,5 @@
 from BotModule.bot import app
-
+from QuickRestoModule.quickResto import QuickResto
 from static.configuration.utils import spreadsheet, scheduler
 
 if __name__ == "__main__":
