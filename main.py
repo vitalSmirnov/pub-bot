@@ -1,6 +1,6 @@
-from bot import app
-from quick_resto_integration import QuickResto
-from utils import scheduler, spreadsheet
+from BotModule.bot import app
+
+from static.configuration.utils import spreadsheet, scheduler
 
 if __name__ == "__main__":
     quick_api = QuickResto(
