@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from static.configuration.config import SCOPES, SHEETS_ID
-
+from Helpers.helpers import Helpers
 
 class SpreadSheets:
     credentials = None
@@ -35,16 +35,7 @@ class SpreadSheets:
 
         self.service = build("sheets", "v4", credentials=self.credentials)
         self.sheets = self.service.spreadsheets()
-
-    def searcher_row(self, array, finder):
-        for i in range(len(array)):
-            if array[i][0] == finder:
-                return i
-
-    def searcher_col(self, array, finder):
-        for i in range(len(array)):
-            if array[0][i] == finder:
-                return i
+        self.helpers = Helpers()
 
     def find_users_index_by_id(self, user_id):
         try:
@@ -54,9 +45,10 @@ class SpreadSheets:
                 .get(spreadsheetId=SHEETS_ID, range=f"Sheet1!A3:A20")
                 .execute()
             ).get('values')
-            print(workers_sheet)
 
-            return self.searcher_row(workers_sheet[0], user_id) + index
+            workers_sheet = self.helpers.array_converter(workers_sheet)
+            print(workers_sheet, 'workers_sheet')
+            return self.helpers.searcher(workers_sheet, user_id) + index
 
         except HttpError as error:
             print(error)
@@ -71,7 +63,6 @@ class SpreadSheets:
                 )
                 .execute()
             )
-            print(result)
         except HttpError as error:
             print(error)
 
@@ -83,7 +74,7 @@ class SpreadSheets:
                 .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!D2:O2")
                 .execute()
             )
-            date_index = self.searcher_col(result.get("values"), date_time)
+            date_index = self.helpers.searcher(result.get("values")[0], date_time)
 
             result = (
                 self.sheets.values()
@@ -142,7 +133,7 @@ class SpreadSheets:
                 .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!D2:R2")
                 .execute()
             )
-            date_index = self.searcher_row(result.get("values"), current_shift_date) + 69
+            date_index = self.helpers.searcher(result.get("values"), current_shift_date) + 69
             worker_index = self.find_users_index_by_id(user_id)
 
             self.sheets.values().update(

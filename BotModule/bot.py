@@ -12,7 +12,7 @@ from BotWrapper.helpers.helpers import (
     state_filter,
     get_user_data,
 )
-from static.configuration.utils import scheduler
+from static.configuration.utils import scheduler, spreadsheet
 
 app = ClientWrapper(
     "bot",
