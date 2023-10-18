@@ -3,6 +3,7 @@ import json
 import requests
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from BotModule.bot import keyboard
+from QuickRestoModule.Helpers.helpers import Helpers
 from static.configuration.config import MAIN_USER_ID
 from SheetsModule.googleSheets import SpreadSheets
 
@@ -10,7 +11,7 @@ from SheetsModule.googleSheets import SpreadSheets
 class QuickResto:
     def __init__(self, bot: ClientWrapper, spreads_sheets: SpreadSheets):
         self.test_value = True
-
+        self.helpers = Helpers()
         self.sheets_integration = spreads_sheets
         self.bot = bot
         self.shift_id = ""
@@ -42,10 +43,8 @@ class QuickResto:
             "className": "ru.edgex.quickresto.module3s.front.zreport.Shift",
             "objectId": self.shift_id,
         }
-        response = requests.get(
-            self.shift_url, headers=self.headers, params=shift_params
-        )
-        shift = response.json()
+        shift = await self.helpers.send_get_request(shift_params, self.shift_url)
+        shift = shift.json()
         if shift.get("status") == "CLOSED":
             self.bot.shifts[self.shift_id] = shift
             self.bot.send_message(
@@ -56,17 +55,14 @@ class QuickResto:
             self.shift_id = ""
 
     def get_last_shift_monitoring(self):
-        response = requests.get(
-            self.last_shift_url, headers=self.headers, params=self.last_shift_params
-        )
-        shift_array = json.loads(response.text)
-        shift = shift_array[1]
+        shift_array = await self.helpers.send_get_request(self.last_shift_params, self.last_shift_url)
+        shift = json.loads(shift_array.text)[1]
+
         today = datetime.date.today()
         shift_time = shift.get("localOpenedTime", "").split("T")[0]
-        if (
-                str(today) == shift_time
-                or str(today - datetime.timedelta(days=1)) == shift_time
-        ) and shift.get("status") == "OPENED":
+
+        if (str(today) == shift_time or str(today - datetime.timedelta(days=1)) == shift_time) \
+                and shift.get("status") == "OPENED":
             self.shift_id = shift.get("id")
             self.worker = self.sheets_integration.find_user_by_date(shift_time)
             print(self.worker)
