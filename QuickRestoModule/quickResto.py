@@ -1,10 +1,10 @@
 import datetime
 import json
 import requests
-from Client_wrapper import ClientWrapper
-from bot import keyboard
-from config import MAIN_USER_ID
-from sheets_ntegration import SpreadSheets
+from BotModule.BotWrapper.clientWrapper import ClientWrapper
+from BotModule.bot import keyboard
+from static.configuration.config import MAIN_USER_ID
+from SheetsModule.googleSheets import SpreadSheets
 
 
 class QuickResto:
