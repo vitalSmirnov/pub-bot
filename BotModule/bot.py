@@ -1,10 +1,9 @@
 import datetime
-
-from BotWrapper.clientWrapper import ClientWrapper
+from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, WORKER_IDS
-from BotWrapper.helpers.helpers import (
+from BotModule.BotWrapper.helpers.helpers import (
     auth_filter,
     set_state,
     UserStates,

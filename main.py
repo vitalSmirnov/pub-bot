@@ -7,7 +7,7 @@ if __name__ == "__main__":
         app,
         spreadsheet,
     )
-    scheduler.add_job(quick_api.shift_manager, "interval", seconds=30)
+    scheduler.add_job(quick_api.shift_manager, "interval", seconds=5)
     scheduler.start()
 
     try:

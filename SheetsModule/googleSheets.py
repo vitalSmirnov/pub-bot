@@ -4,9 +4,9 @@ from google.oauth2 import credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-
 from static.configuration.config import SCOPES, SHEETS_ID
-from Helpers.helpers import Helpers
+from SheetsModule.Helpers.helpers import searcher, array_converter
+
 
 class SpreadSheets:
     credentials = None
@@ -35,7 +35,6 @@ class SpreadSheets:
 
         self.service = build("sheets", "v4", credentials=self.credentials)
         self.sheets = self.service.spreadsheets()
-        self.helpers = Helpers()
 
     def find_users_index_by_id(self, user_id):
         try:
@@ -46,23 +45,10 @@ class SpreadSheets:
                 .execute()
             ).get('values')
 
-            workers_sheet = self.helpers.array_converter(workers_sheet)
+            workers_sheet = array_converter(workers_sheet)
             print(workers_sheet, 'workers_sheet')
-            return self.helpers.searcher(workers_sheet, user_id) + index
+            return searcher(workers_sheet, str(user_id)) + index
 
-        except HttpError as error:
-            print(error)
-
-    def read_spreadsheet(self, first_parameter, second_parameter):
-        try:
-            result = (
-                self.sheets.values()
-                .get(
-                    spreadsheetId=SHEETS_ID,
-                    range=f"Sheet1!{first_parameter}:{second_parameter}",
-                )
-                .execute()
-            )
         except HttpError as error:
             print(error)
 
@@ -74,7 +60,7 @@ class SpreadSheets:
                 .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!D2:O2")
                 .execute()
             )
-            date_index = self.helpers.searcher(result.get("values")[0], date_time)
+            date_index = searcher(result.get("values")[0], date_time)
 
             result = (
                 self.sheets.values()
@@ -133,7 +119,7 @@ class SpreadSheets:
                 .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!D2:R2")
                 .execute()
             )
-            date_index = self.helpers.searcher(result.get("values"), current_shift_date) + 69
+            date_index = searcher(result.get("values")[0], current_shift_date) + 69
             worker_index = self.find_users_index_by_id(user_id)
 
             self.sheets.values().update(
@@ -164,5 +150,16 @@ class SpreadSheets:
                     date_index - 64,
                 )
 
+        except HttpError as error:
+            return error
+
+    def log_shift_data(self, closing_encashment, total_card, index):
+        try:
+            self.sheets.values().update(
+                spreadsheetId=SHEETS_ID,
+                range=f"Sheet2!C{index}:D{index}",
+                valueInputOption="USER_ENTERED",
+                body={"values": [[closing_encashment, total_card]]},
+            ).execute()
         except HttpError as error:
             return error

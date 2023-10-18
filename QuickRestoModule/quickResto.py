@@ -43,7 +43,7 @@ class QuickResto:
             "className": "ru.edgex.quickresto.module3s.front.zreport.Shift",
             "objectId": self.shift_id,
         }
-        shift = await self.helpers.send_get_request(shift_params, self.shift_url)
+        shift = self.helpers.send_get_request(shift_params, self.shift_url)
         shift = shift.json()
         if shift.get("status") == "CLOSED":
             self.bot.shifts[self.shift_id] = shift
@@ -55,7 +55,7 @@ class QuickResto:
             self.shift_id = ""
 
     def get_last_shift_monitoring(self):
-        shift_array = await self.helpers.send_get_request(self.last_shift_params, self.last_shift_url)
+        shift_array = self.helpers.send_get_request(self.last_shift_params, self.last_shift_url)
         shift = json.loads(shift_array.text)[1]
 
         today = datetime.date.today()

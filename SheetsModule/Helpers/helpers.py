@@ -1,13 +1,16 @@
 import numpy as np
 
 
-class Helpers:
-    def array_converter(self, array):
-        a = np.array(array)
-        a = a.flatten()
-        return a
+def array_converter(array):
+    a = np.array(array)
+    a = a.flatten()
+    return a
 
-    def searcher(self, array, finder):
-        for i in range(len(array)):
-            if array[i][0] == finder:
-                return i
+
+def searcher(array, finder):
+    print(array, finder, "array")
+    for i in range(len(array)):
+        print(array[i], finder)
+        if array[i] == finder:
+            return i
+

@@ -1,6 +1,6 @@
 from pyrogram import filters
 
-from config import MAIN_USER_ID, WORKER_IDS
+from static.configuration.config import MAIN_USER_ID, WORKER_IDS
 
 conversations = {}
 users_state_data = {}
