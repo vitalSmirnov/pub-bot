@@ -48,7 +48,7 @@ class QuickResto:
         if shift.get("status") == "CLOSED":
             self.bot.shifts[self.shift_id] = shift
             self.bot.send_message(
-                int(self.worker[1]),
+                int(self.worker[0]),
                 f"Смена закрыта, внесите данные",
                 reply_markup=keyboard(self.shift_id),
             )
@@ -68,21 +68,16 @@ class QuickResto:
             print(self.worker)
             self.bot.send_message(
                 MAIN_USER_ID,
-                f"{self.worker[0]} открыл(а) смену",
+                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
             )
             self.bot.send_message(
-                int(self.worker[1]),
+                int(self.worker[0]),
                 f"Вы открыли смену",
             )
 
     def shift_manager(self):
         print("work")
-        self.shift_id = '664'
-        self.worker = ['Соня', MAIN_USER_ID]
-        self.current_shift_date = '2023-10-17'
-        self.get_shift()
-
-        # if self.shift_id == "":
-        #     self.get_last_shift_monitoring()
-        # else:
-        #     self.get_shift()
+        if self.shift_id == "":
+            self.get_last_shift_monitoring()
+        else:
+            self.get_shift()
