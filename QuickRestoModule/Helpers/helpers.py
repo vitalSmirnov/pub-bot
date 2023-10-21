@@ -13,5 +13,5 @@ class Helpers:
         response = requests.get(
             shift_url, headers=self.headers, params=shift_params
         )
-        return response
+        return response.json()
 

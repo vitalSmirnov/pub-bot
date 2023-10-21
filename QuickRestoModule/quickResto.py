@@ -1,11 +1,11 @@
 import datetime
 import json
-import requests
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from BotModule.bot import keyboard
 from QuickRestoModule.Helpers.helpers import Helpers
 from static.configuration.config import MAIN_USER_ID
 from SheetsModule.googleSheets import SpreadSheets
+from static.strings.strings import CLOSE_SHIFT_ALERT, OPEN_SHIFT_ALERT
 
 
 class QuickResto:
@@ -31,11 +31,6 @@ class QuickResto:
             "sortField%5B%5D": "closed",
             "sortOrder%5B%5D": "asc",
         }
-        self.headers = {
-            "Content-Type": "application/json",
-            "Connection": "keep-alive",
-            "Authorization": "Basic dm4zNjI6SlJXOEFUNXg=",
-        }
 
     def get_shift(self):
         shift_params = {
@@ -44,23 +39,21 @@ class QuickResto:
             "objectId": self.shift_id,
         }
         shift = self.helpers.send_get_request(shift_params, self.shift_url)
-        shift = shift.json()
         if shift.get("status") == "CLOSED":
             self.bot.shifts[self.shift_id] = shift
             self.bot.send_message(
                 int(self.worker[0]),
-                f"Смена закрыта, внесите данные",
+                CLOSE_SHIFT_ALERT,
                 reply_markup=keyboard(self.shift_id),
             )
             self.shift_id = ""
 
     def get_last_shift_monitoring(self):
         shift_array = self.helpers.send_get_request(self.last_shift_params, self.last_shift_url)
-        shift = json.loads(shift_array.text)[1]
-
+        shift = shift_array[1]
         today = datetime.date.today()
-        shift_time = shift.get("localOpenedTime", "").split("T")[0]
 
+        shift_time = shift.get("localOpenedTime", "").split("T")[0]
         if (str(today) == shift_time or str(today - datetime.timedelta(days=1)) == shift_time) \
                 and shift.get("status") == "OPENED":
             self.shift_id = shift.get("id")
@@ -72,12 +65,16 @@ class QuickResto:
             )
             self.bot.send_message(
                 int(self.worker[0]),
-                f"Вы открыли смену",
+                OPEN_SHIFT_ALERT,
             )
 
     def shift_manager(self):
         print("work")
-        if self.shift_id == "":
-            self.get_last_shift_monitoring()
-        else:
-            self.get_shift()
+        self.shift_id = 669
+        self.worker = [MAIN_USER_ID, 'Соня']
+        self.current_shift_date = '2023-10-21'
+        self.get_shift()
+        # if self.shift_id == "":
+        #     self.get_last_shift_monitoring()
+        # else:
+        #     self.get_shift()

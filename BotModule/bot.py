@@ -12,7 +12,7 @@ from BotModule.BotWrapper.helpers.helpers import (
     get_user_data,
 )
 from static.configuration.utils import scheduler, spreadsheet
-
+from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT
 app = ClientWrapper(
     "bot",
     api_id=19295348,
@@ -22,23 +22,35 @@ app = ClientWrapper(
 )
 auth_filter = filters.create(auth_filter)
 
+def message_handler(value: int):
+    if value == 0:
+        return f"итоги совпали ✅"
+    elif value > 0:
+        return f"сверхприбыль **{value}** 📈"
+    else:
+        return f"убыток **{value}** 📉"
 
 def send_shift_data(worker_id, shift_id, data):
     user_data = int(data[0]) + int(data[1])
-    shift = app.shifts.get(shift_id)
+    shift = app.shifts.get(int(shift_id))
+
     quick_data = int(shift.get("closingEncashment")) + int(shift.get("totalCard"))
     spreadsheet.log_shift_data(shift.get("closingEncashment"), shift.get("totalCard"), 25)
     spreadsheet.log_shift_data(data[0], data[1], 26)
+    # отправка данных после закрытия смены
     spreadsheet.close_shift(
         worker_id, user_data - quick_data, shift.get("localOpenedTime", "").split("T")[0]
     )
+    #сообщение об итогах
+    message = message_handler(user_data - quick_data)
+
     app.send_message(
         MAIN_USER_ID,
-        f"{WORKER_IDS.get(worker_id, '-')} закрыл(а) смену с {user_data - quick_data}",
+        f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
     )
-    app.shifts.pop(shift_id)
+    app.shifts.pop(int(shift_id))
 
-
+# inline клавиатура для бота
 def keyboard(shift_id):
     kb = InlineKeyboardMarkup(
         [
@@ -59,8 +71,7 @@ def input_data(_, callback_query: CallbackQuery):
     callback_query.edit_message_reply_markup()  # reply_markup=InlineKeyboardMarkup([]))
     app.send_message(
         callback_query.from_user.id,
-        "Необходимо внести данные о наличных в кассе и данных с терминала в бот, для этого отправьте два числа, "
-        "разделяя их # символом. Пример: 8200#7500",
+        INPUT_DATA_ALERT,
     )
     set_state(callback_query.from_user.id, UserStates.data_entry)
     update_user_data(callback_query.from_user.id, {"shift_id": shift_id})
@@ -71,7 +82,6 @@ def data_entry(_, message):
     data = message.text.split("#")
     if len(data) == 2 and data[0].isdigit() and data[1].isdigit():
         shift_id = get_user_data(message.from_user.id).get("shift_id")
-        set_state(message.from_user.id, None)
         app.send_message(
             message.from_user.id,
             f"Вы внесли данные {data[0]} и {data[1]}\nID: {shift_id}",
@@ -85,5 +95,5 @@ def data_entry(_, message):
     else:
         app.send_message(
             message.from_user.id,
-            "Неверный формат, попробуйте еще раз",
+            WRONG_FORMAT,
         )

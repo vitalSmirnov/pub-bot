@@ -8,9 +8,6 @@ def array_converter(array):
 
 
 def searcher(array, finder):
-    print(array, finder, "array")
     for i in range(len(array)):
-        print(array[i], finder)
         if array[i] == finder:
             return i
-
