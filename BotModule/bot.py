@@ -13,6 +13,7 @@ from BotModule.BotWrapper.helpers.helpers import (
 )
 from static.configuration.utils import scheduler, spreadsheet
 from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT
+
 app = ClientWrapper(
     "bot",
     api_id=19295348,
@@ -22,6 +23,7 @@ app = ClientWrapper(
 )
 auth_filter = filters.create(auth_filter)
 
+
 def message_handler(value: int):
     if value == 0:
         return f"итоги совпали ✅"
@@ -29,6 +31,7 @@ def message_handler(value: int):
         return f"сверхприбыль **{value}** 📈"
     else:
         return f"убыток **{value}** 📉"
+
 
 def send_shift_data(worker_id, shift_id, data):
     user_data = int(data[0]) + int(data[1])
@@ -41,7 +44,7 @@ def send_shift_data(worker_id, shift_id, data):
     spreadsheet.close_shift(
         worker_id, user_data - quick_data, shift.get("localOpenedTime", "").split("T")[0]
     )
-    #сообщение об итогах
+    # сообщение об итогах
     message = message_handler(user_data - quick_data)
 
     app.send_message(
@@ -49,6 +52,7 @@ def send_shift_data(worker_id, shift_id, data):
         f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
     )
     app.shifts.pop(int(shift_id))
+
 
 # inline клавиатура для бота
 def keyboard(shift_id):

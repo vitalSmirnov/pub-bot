@@ -88,30 +88,6 @@ class SpreadSheets:
         except HttpError as error:
             print(error)
 
-    def color_changer(self, color, row, col):
-        try:
-
-            data = {
-                "requests": [
-                    {
-                        "repeatCell": {
-                            "range": {
-                                "sheetId": 0,
-                                "startRowIndex": row - 1,
-                                "endRowIndex": row,
-                                "startColumnIndex": col - 1,
-                                "endColumnIndex": col,
-                            },
-                            "cell": {"userEnteredFormat": {"backgroundColor": color}},
-                            "fields": "userEnteredFormat.backgroundColor",
-                        }
-                    }
-                ]
-            }
-            self.sheets.batchUpdate(spreadsheetId=SHEETS_ID, body=data).execute()
-        except HttpError as e:
-            print(e)
-
     def close_shift(self, user_id, resulting_value, current_shift_date):
         try:
             result = (
@@ -128,27 +104,6 @@ class SpreadSheets:
                 valueInputOption="USER_ENTERED",
                 body={"values": [[resulting_value]]},
             ).execute()
-
-            if resulting_value == 0:
-                self.color_changer(
-                    {"red": 0, "green": 0.7, "blue": 0.1, "alpha": 0.05},
-                    worker_index,
-                    date_index - 64,
-                )
-
-            elif resulting_value < 0:
-                self.color_changer(
-                    {"red": 1, "green": 0, "blue": 0, "alpha": 1},
-                    worker_index,
-                    date_index - 64,
-                )
-
-            elif resulting_value > 0:
-                self.color_changer(
-                    {"red": 0, "green": 0.2, "blue": 0.6, "alpha": 0.05},
-                    worker_index,
-                    date_index - 64,
-                )
 
         except HttpError as error:
             return error

@@ -70,11 +70,7 @@ class QuickResto:
 
     def shift_manager(self):
         print("work")
-        self.shift_id = 669
-        self.worker = [MAIN_USER_ID, 'Соня']
-        self.current_shift_date = '2023-10-21'
-        self.get_shift()
-        # if self.shift_id == "":
-        #     self.get_last_shift_monitoring()
-        # else:
-        #     self.get_shift()
+        if self.shift_id == "":
+            self.get_last_shift_monitoring()
+        else:
+            self.get_shift()
