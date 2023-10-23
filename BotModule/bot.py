@@ -12,7 +12,7 @@ from BotModule.BotWrapper.helpers.helpers import (
     get_user_data,
 )
 from static.configuration.utils import scheduler, spreadsheet
-from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT
+from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT, SHIFT_WORKER, SHIFT_KNOW
 
 app = ClientWrapper(
     "bot",
@@ -51,6 +51,10 @@ def send_shift_data(worker_id, shift_id, data):
         MAIN_USER_ID,
         f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
     )
+    app.send_message(
+        784338982,
+        f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
+    )
     app.shifts.pop(int(shift_id))
 
 
@@ -61,6 +65,19 @@ def keyboard(shift_id):
             [
                 InlineKeyboardButton(
                     "Ввести данные", callback_data=f"input_data_{shift_id}"
+                )
+            ],
+        ]
+    )
+    return kb
+
+
+def all_user_keyboard():
+    kb = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "Кто на смене?", callback_data='who-on-shift'
                 )
             ],
         ]
@@ -79,6 +96,26 @@ def input_data(_, callback_query: CallbackQuery):
     )
     set_state(callback_query.from_user.id, UserStates.data_entry)
     update_user_data(callback_query.from_user.id, {"shift_id": shift_id})
+
+
+@app.on_message()
+def check_shift(message):
+    app.send_message(
+        message.from_user.id,
+        SHIFT_KNOW,
+        reply_markup=all_user_keyboard()
+    )
+
+
+@app.on_callback_query(filters.regex("who-on-shift"))
+def send_shift_worker(_, callback_query: CallbackQuery):
+    callback_query.answer()
+    date = str(datetime.date.today())
+    message = spreadsheet.find_user_by_date(date)
+    app.send_message(
+        callback_query.from_user.id,
+        f'{SHIFT_WORKER} {message[1]}',
+    )
 
 
 @app.on_message(auth_filter & filters.text & state_filter(UserStates.data_entry))

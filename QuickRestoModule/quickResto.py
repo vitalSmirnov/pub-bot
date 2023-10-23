@@ -64,6 +64,10 @@ class QuickResto:
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
             )
             self.bot.send_message(
+                784338982,
+                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
+            )
+            self.bot.send_message(
                 int(self.worker[0]),
                 OPEN_SHIFT_ALERT,
             )
