@@ -2,7 +2,7 @@ import datetime
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, WORKER_IDS
+from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, WORKER_IDS, API_ID, API_HASH
 from BotModule.BotWrapper.helpers.helpers import (
     auth_filter,
     set_state,
@@ -16,8 +16,8 @@ from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT, SHIFT_WORKER,
 
 app = ClientWrapper(
     "bot",
-    api_id=19295348,
-    api_hash="120269548c981091dac0c5cffad74808",
+    api_id=API_ID,
+    api_hash=API_HASH,
     bot_token=BOT_TOKEN,
     in_memory=True,
 )

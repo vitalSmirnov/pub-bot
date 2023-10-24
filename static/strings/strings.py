@@ -1,10 +1,23 @@
-INPUT_DATA_ALERT = 'Необходимо внести данные о наличных в кассе и данных с терминала в бот, для этого отправьте два ' \
-                   'числа, разделяя их # символом. Пример: 8200#7500'
+import json
+import os
 
-WRONG_FORMAT = 'Неверный формат, попробуйте еще раз'
+INPUT_DATA_ALERT = ""
+WRONG_FORMAT = ""
+CLOSE_SHIFT_ALERT = ""
+OPEN_SHIFT_ALERT = ""
+SHIFT_WORKER = ""
+SHIFT_KNOW = ""
 
-CLOSE_SHIFT_ALERT = 'Смена закрыта, внесите данные'
-OPEN_SHIFT_ALERT = 'Вы открыли смену'
+if os.path.exists("config.json"):
+    with open("config.json", "r", encoding="utf-8") as json_conf:
+        credentials = json.load(json_conf)
+        strings = credentials.get("strings")
 
-SHIFT_WORKER = 'Сегодня на смене'
-SHIFT_KNOW = 'Чтобы узнать кто на смене, кликните на кнопку ниже'
+        INPUT_DATA_ALERT = strings.get("input_data_alert")
+        WRONG_FORMAT = strings.get("wrong_format")
+
+        CLOSE_SHIFT_ALERT = strings.get("close_shift_alert")
+        OPEN_SHIFT_ALERT = strings.get("open_shift_alert")
+
+        SHIFT_WORKER = strings.get("current_worker")
+        SHIFT_KNOW = strings.get("shift_info_message")
