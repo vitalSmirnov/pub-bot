@@ -56,6 +56,7 @@ def send_shift_data(worker_id, shift_id, data):
         f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
     )
     app.shifts.pop(int(shift_id))
+    set_state(int(worker_id), None)
 
 
 # inline клавиатура для бота
@@ -99,7 +100,7 @@ def input_data(_, callback_query: CallbackQuery):
 
 
 @app.on_message()
-def check_shift(message):
+def check_shift(_, message):
     app.send_message(
         message.from_user.id,
         SHIFT_KNOW,

@@ -46,6 +46,10 @@ class QuickResto:
                 CLOSE_SHIFT_ALERT,
                 reply_markup=keyboard(self.shift_id),
             )
+            self.bot.send_message(
+                MAIN_USER_ID,
+                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
+            )
             self.shift_id = ""
 
     def get_last_shift_monitoring(self):
