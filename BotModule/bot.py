@@ -2,7 +2,7 @@ import datetime
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, WORKER_IDS, API_ID, API_HASH
+from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, WORKER_IDS, API_ID, API_HASH, VITAL_USER_ID
 from BotModule.BotWrapper.helpers.helpers import (
     auth_filter,
     set_state,
@@ -52,7 +52,7 @@ def send_shift_data(worker_id, shift_id, data):
         f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
     )
     app.send_message(
-        784338982,
+        VITAL_USER_ID,
         f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
     )
     app.shifts.pop(int(shift_id))

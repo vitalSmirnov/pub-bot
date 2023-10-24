@@ -3,7 +3,7 @@ import json
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from BotModule.bot import keyboard
 from QuickRestoModule.Helpers.helpers import Helpers
-from static.configuration.config import MAIN_USER_ID
+from static.configuration.config import MAIN_USER_ID, VITAL_USER_ID
 from SheetsModule.googleSheets import SpreadSheets
 from static.strings.strings import CLOSE_SHIFT_ALERT, OPEN_SHIFT_ALERT
 
@@ -50,6 +50,10 @@ class QuickResto:
                 MAIN_USER_ID,
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
             )
+            self.bot.send_message(
+                VITAL_USER_ID,
+                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
+            )
             self.shift_id = ""
 
     def get_last_shift_monitoring(self):
@@ -68,7 +72,7 @@ class QuickResto:
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
             )
             self.bot.send_message(
-                784338982,
+                VITAL_USER_ID,
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
             )
             self.bot.send_message(
