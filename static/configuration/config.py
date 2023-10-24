@@ -5,6 +5,7 @@ BOT_TOKEN = ""
 SHEETS_ID = ""
 SCOPES = []
 MAIN_USER_ID = 0
+VITAL_USER_ID = 0
 WORKER_IDS = {}
 
 if os.path.exists("config.json"):
@@ -21,6 +22,7 @@ if os.path.exists("config.json"):
         SHEETS_ID = sheets.get("id")
         SCOPES = sheets.get("scopes")
 
-        MAIN_USER_ID = int(users.get("main_user"))
+        MAIN_USER_ID = users.get("main_user")
+        VITAL_USER_ID = users.get("vital_user")
         WORKER_IDS = users.get("worker_ids")
 
