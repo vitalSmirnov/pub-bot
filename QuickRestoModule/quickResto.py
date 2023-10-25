@@ -1,5 +1,4 @@
 import datetime
-import json
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from BotModule.bot import keyboard
 from QuickRestoModule.Helpers.helpers import Helpers
