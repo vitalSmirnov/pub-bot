@@ -42,6 +42,7 @@ class SpreadSheets:
 
     def get_shift_id(self):
         return self.shift_id
+
     def find_users_index_by_id(self, user_id):
         try:
             index = 3
@@ -52,7 +53,6 @@ class SpreadSheets:
             ).get('values')
 
             workers_sheet = array_converter(workers_sheet)
-            print(workers_sheet, 'workers_sheet')
             return searcher(workers_sheet, str(user_id)) + index
 
         except HttpError as error:
