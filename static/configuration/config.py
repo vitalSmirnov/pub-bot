@@ -1,6 +1,7 @@
 import json
 import os
 API_ID = 0
+API_HASH = ""
 BOT_TOKEN = ""
 SHEETS_ID = ""
 SCOPES = []
@@ -25,4 +26,5 @@ if os.path.exists("config.json"):
         MAIN_USER_ID = users.get("main_user")
         VITAL_USER_ID = users.get("vital_user")
         WORKER_IDS = users.get("worker_ids")
+        WORKER_IDS_KEY_SWAPPEN = users.get("worker_ids_swap")
 

@@ -1,5 +1,4 @@
 import datetime
-import json
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from BotModule.bot import keyboard
 from QuickRestoModule.Helpers.helpers import Helpers
@@ -40,17 +39,19 @@ class QuickResto:
         }
         shift = self.helpers.send_get_request(shift_params, self.shift_url)
         if shift.get("status") == "CLOSED":
-            print(f'Worker {self.worker[1]} with id {self.worker[0]} CLOSE shift - {datetime.datetime.now()}')
+
+            print(f'--Worker {self.worker[1]} with id {self.worker[0]} CLOSE shift - {datetime.datetime.now()}')
+
             self.bot.shifts[self.shift_id] = shift
             self.bot.send_message(
                 int(self.worker[0]),
                 CLOSE_SHIFT_ALERT,
                 reply_markup=keyboard(self.shift_id),
             )
-            self.bot.send_message(
-                MAIN_USER_ID,
-                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
-            )
+            # self.bot.send_message(
+            #     MAIN_USER_ID,
+            #     f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
+            # )
             self.bot.send_message(
                 VITAL_USER_ID,
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
@@ -62,16 +63,21 @@ class QuickResto:
         shift = shift_array[1]
         today = datetime.date.today()
 
+        print(f'--No open shifts - {datetime.datetime.now()}')
+
         shift_time = shift.get("localOpenedTime", "").split("T")[0]
         if (str(today) == shift_time or str(today - datetime.timedelta(days=1)) == shift_time) \
                 and shift.get("status") == "OPENED":
+
+            print(f'--Worker {self.worker[1]} with id {self.worker[0]} OPEN shift - {datetime.datetime.now()}')
+
             self.shift_id = shift.get("id")
             self.worker = self.sheets_integration.find_user_by_date(shift_time)
-            print(f'Worker {self.worker[1]} with id {self.worker[0]} OPEN shift - {datetime.datetime.now()}')
-            self.bot.send_message(
-                MAIN_USER_ID,
-                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
-            )
+
+            # self.bot.send_message(
+            #     MAIN_USER_ID,
+            #     f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
+            # )
             self.bot.send_message(
                 VITAL_USER_ID,
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
@@ -83,7 +89,15 @@ class QuickResto:
 
     def shift_manager(self):
         print(f'Shift manager works - {datetime.datetime.now()}')
-        if self.shift_id == "":
-            self.get_last_shift_monitoring()
-        else:
-            self.get_shift()
+
+        # --------------------------------- debug settings ---------------------------------
+        self.shift_id = 674
+        self.worker = [VITAL_USER_ID, "user"]
+        self.current_shift_date = '2023-10-26'
+        self.get_shift()
+        # -----------------------------------------------------------------------------------
+
+        # if self.shift_id == "":
+        #     self.get_last_shift_monitoring()
+        # else:
+        #     self.get_shift()
