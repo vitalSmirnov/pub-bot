@@ -7,6 +7,8 @@ CLOSE_SHIFT_ALERT = ""
 OPEN_SHIFT_ALERT = ""
 SHIFT_WORKER = ""
 SHIFT_KNOW = ""
+BAR_WORKS = ""
+BAR_NOT_WORKS = ""
 
 if os.path.exists("config.json"):
     with open("config.json", "r", encoding="utf-8") as json_conf:
@@ -21,3 +23,6 @@ if os.path.exists("config.json"):
 
         SHIFT_WORKER = strings.get("current_worker")
         SHIFT_KNOW = strings.get("shift_info_message")
+
+        BAR_WORKS = strings.get("shift_is_working")
+        BAR_NOT_WORKS = strings.get("shift_isnt_work")
