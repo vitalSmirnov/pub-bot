@@ -18,7 +18,7 @@ def state_filter(data):
 
 
 def auth_filter(_, __, query):
-    return query.from_user.id in [MAIN_USER_ID, *WORKER_IDS.keys()]
+    return query.from_user.id in [MAIN_USER_ID, *WORKER_IDS.values()]
 
 
 def set_state(user_id, state):
