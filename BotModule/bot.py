@@ -102,7 +102,7 @@ def input_data(_, callback_query: CallbackQuery):
     update_user_data(callback_query.from_user.id, {"shift_id": shift_id})
 
 
-@app.on_message()
+@app.on_message(filters.command(['start']))
 def check_shift(_, message):
     app.send_message(
         message.from_user.id,
