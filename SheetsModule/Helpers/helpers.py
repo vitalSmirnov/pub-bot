@@ -1,10 +1,8 @@
-import numpy as np
+import itertools
 
 
 def array_converter(array):
-    a = np.array(array)
-    a = a.flatten()
-    return a
+    return list(itertools.chain(*array))
 
 
 def searcher(array, finder):
