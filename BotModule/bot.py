@@ -2,7 +2,8 @@ import datetime
 from BotModule.BotWrapper.clientWrapper import ClientWrapper
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, WORKER_IDS, API_ID, API_HASH, VITAL_USER_ID
+from static.configuration.config import BOT_TOKEN, MAIN_USER_ID, API_ID, API_HASH, VITAL_USER_ID, \
+    WORKER_IDS_KEY_SWAPPEN
 from BotModule.BotWrapper.helpers.helpers import (
     auth_filter,
     set_state,
@@ -36,8 +37,10 @@ def message_handler(value: int):
 def send_shift_data(worker_id, shift_id, data):
     user_data = int(data[0]) + int(data[1])
     shift = app.shifts.get(int(shift_id))
-    print(f'Worker with id {worker_id} ENTERS shift\'s data - {datetime.datetime.now()}')
     quick_data = int(shift.get("closingEncashment")) + int(shift.get("totalCard"))
+
+    print(f'----Quick resto data {[shift.get("closingEncashment"), shift.get("totalCard")]} - {datetime.datetime.now()}')
+
     spreadsheet.log_shift_data(shift.get("closingEncashment"), shift.get("totalCard"), 25)
     spreadsheet.log_shift_data(data[0], data[1], 26)
     # отправка данных после закрытия смены
@@ -47,13 +50,13 @@ def send_shift_data(worker_id, shift_id, data):
     # сообщение об итогах
     message = message_handler(user_data - quick_data)
 
-    app.send_message(
-        MAIN_USER_ID,
-        f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
-    )
+    # app.send_message(
+    #     MAIN_USER_ID,
+    #     f"У {WORKER_IDS_KEY_SWAPPEN.get(str(worker_id), '-')} на смене {message}",
+    # )
     app.send_message(
         VITAL_USER_ID,
-        f"У {WORKER_IDS.get(worker_id, '-')} на смене {message}",
+        f'У [{WORKER_IDS_KEY_SWAPPEN.get(str(worker_id), "-")}](tg://user?id={worker_id}) на смене {message}',
     )
     app.shifts.pop(int(shift_id))
     set_state(int(worker_id), None)
@@ -91,6 +94,8 @@ def all_user_keyboard():
 
 @app.on_callback_query(auth_filter & filters.regex("input_data_"))
 def input_data(_, callback_query: CallbackQuery):
+    print(f'----Worker with id {callback_query.from_user.id} clicks on close-button - {datetime.datetime.now()}')
+
     callback_query.answer()
     shift_id = callback_query.data.split("_")[-1]
     callback_query.edit_message_reply_markup()  # reply_markup=InlineKeyboardMarkup([]))
@@ -113,6 +118,7 @@ def check_shift(_, message):
 
 @app.on_callback_query(filters.regex("who-on-shift"))
 def send_shift_worker(_, callback_query: CallbackQuery):
+    print(f'++++Worker with id {callback_query.from_user.id} click who-on-shift - {datetime.datetime.now()}')
     callback_query.answer()
     date = str(datetime.date.today())
     message = spreadsheet.find_user_by_date(date)
@@ -124,6 +130,8 @@ def send_shift_worker(_, callback_query: CallbackQuery):
 
 @app.on_callback_query(filters.regex("is-shift-online"))
 def send_shift_is_online(_, callback_query: CallbackQuery):
+    print(f'++++Worker with id {callback_query.from_user.id} click is-bar-works - {datetime.datetime.now()}')
+
     callback_query.answer()
     if spreadsheet.get_shift_id() is None:
         message = BAR_NOT_WORKS
@@ -139,6 +147,7 @@ def send_shift_is_online(_, callback_query: CallbackQuery):
 @app.on_message(auth_filter & filters.text & state_filter(UserStates.data_entry))
 def data_entry(_, message):
     data = message.text.split("#")
+    print(f'----Worker with id {message.from_user.id} enter data {data}- {datetime.datetime.now()}')
     if len(data) == 2 and data[0].isdigit() and data[1].isdigit():
         shift_id = get_user_data(message.from_user.id).get("shift_id")
         app.send_message(
@@ -152,6 +161,7 @@ def data_entry(_, message):
             args=(message.from_user.id, shift_id, data),
         )
     else:
+        print(f'----Worker with id {message.from_user.id} enter wrong data format- {datetime.datetime.now()}')
         app.send_message(
             message.from_user.id,
             WRONG_FORMAT,

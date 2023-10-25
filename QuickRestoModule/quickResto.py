@@ -48,10 +48,10 @@ class QuickResto:
                 CLOSE_SHIFT_ALERT,
                 reply_markup=keyboard(self.shift_id),
             )
-            self.bot.send_message(
-                MAIN_USER_ID,
-                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
-            )
+            # self.bot.send_message(
+            #     MAIN_USER_ID,
+            #     f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
+            # )
             self.bot.send_message(
                 VITAL_USER_ID,
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) закрыл(а) смену, ожидается внесение данных",
@@ -72,10 +72,10 @@ class QuickResto:
             self.shift_id = shift.get("id")
             self.worker = self.sheets_integration.find_user_by_date(shift_time)
 
-            self.bot.send_message(
-                MAIN_USER_ID,
-                f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
-            )
+            # self.bot.send_message(
+            #     MAIN_USER_ID,
+            #     f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
+            # )
             self.bot.send_message(
                 VITAL_USER_ID,
                 f"[{self.worker[1]}](tg://user?id={self.worker[0]}) открыл(а) смену",
@@ -89,13 +89,13 @@ class QuickResto:
         print(f'Shift manager works - {datetime.datetime.now()}')
 
         # --------------------------------- debug settings ---------------------------------
-        # self.shift_id = 674
-        # self.worker = [VITAL_USER_ID, "user"]
-        # self.current_shift_date = '2023-10-26'
-        # self.get_shift()
+        self.shift_id = 674
+        self.worker = [VITAL_USER_ID, "user"]
+        self.current_shift_date = '2023-10-26'
+        self.get_shift()
         # -----------------------------------------------------------------------------------
 
-        if self.shift_id == "":
-            self.get_last_shift_monitoring()
-        else:
-            self.get_shift()
+        # if self.shift_id == "":
+        #     self.get_last_shift_monitoring()
+        # else:
+        #     self.get_shift()

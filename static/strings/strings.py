@@ -7,8 +7,6 @@ CLOSE_SHIFT_ALERT = ""
 OPEN_SHIFT_ALERT = ""
 SHIFT_WORKER = ""
 SHIFT_KNOW = ""
-BAR_WORKS = ""
-BAR_NOT_WORKS = ""
 
 if os.path.exists("config.json"):
     with open("config.json", "r", encoding="utf-8") as json_conf:

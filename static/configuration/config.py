@@ -8,6 +8,7 @@ SCOPES = []
 MAIN_USER_ID = 0
 VITAL_USER_ID = 0
 WORKER_IDS = {}
+WORKER_IDS_KEY_SWAPPEN = {}
 
 if os.path.exists("config.json"):
     with open("config.json", "r", encoding="utf-8") as json_conf:
