@@ -36,7 +36,7 @@ def message_handler(value: int):
 def send_shift_data(worker_id, shift_id, data):
     user_data = int(data[0]) + int(data[1])
     shift = app.shifts.get(int(shift_id))
-
+    print(f'Worker with id {worker_id} ENTERS shift\'s data - {datetime.datetime.now()}')
     quick_data = int(shift.get("closingEncashment")) + int(shift.get("totalCard"))
     spreadsheet.log_shift_data(shift.get("closingEncashment"), shift.get("totalCard"), 25)
     spreadsheet.log_shift_data(data[0], data[1], 26)
