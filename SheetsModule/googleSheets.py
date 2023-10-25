@@ -35,7 +35,13 @@ class SpreadSheets:
 
         self.service = build("sheets", "v4", credentials=self.credentials)
         self.sheets = self.service.spreadsheets()
+        self.shift_id = None
 
+    def set_shift_id(self, shift_id):
+        self.shift_id = shift_id
+
+    def get_shift_id(self):
+        return self.shift_id
     def find_users_index_by_id(self, user_id):
         try:
             index = 3
@@ -57,11 +63,10 @@ class SpreadSheets:
             worker_index = 0
             result = (
                 self.sheets.values()
-                .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!D2:O2")
+                .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!D2:AD2")
                 .execute()
             )
             date_index = searcher(result.get("values")[0], date_time)
-
             result = (
                 self.sheets.values()
                 .get(

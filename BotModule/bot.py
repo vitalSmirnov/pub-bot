@@ -12,7 +12,7 @@ from BotModule.BotWrapper.helpers.helpers import (
     get_user_data,
 )
 from static.configuration.utils import scheduler, spreadsheet
-from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT, SHIFT_WORKER, SHIFT_KNOW
+from static.strings.strings import INPUT_DATA_ALERT, WRONG_FORMAT, SHIFT_WORKER, SHIFT_KNOW, BAR_WORKS, BAR_NOT_WORKS
 
 app = ClientWrapper(
     "bot",
@@ -79,6 +79,9 @@ def all_user_keyboard():
             [
                 InlineKeyboardButton(
                     "Кто на смене?", callback_data='who-on-shift'
+                ),
+                InlineKeyboardButton(
+                    "Работа бара", callback_data='is-shift-online'
                 )
             ],
         ]
@@ -116,6 +119,20 @@ def send_shift_worker(_, callback_query: CallbackQuery):
     app.send_message(
         callback_query.from_user.id,
         f'{SHIFT_WORKER} {message[1]}',
+    )
+
+
+@app.on_callback_query(filters.regex("is-shift-online"))
+def send_shift_is_online(_, callback_query: CallbackQuery):
+    callback_query.answer()
+    if spreadsheet.get_shift_id() is None:
+        message = BAR_NOT_WORKS
+    else:
+        message = BAR_WORKS
+
+    app.send_message(
+        callback_query.from_user.id,
+        message,
     )
 
 
