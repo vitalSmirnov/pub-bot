@@ -86,11 +86,11 @@ class QuickResto:
             )
 
     def shift_manager(self):
-        print(f'Shift manager works - {datetime.datetime.now()}')
+        print(f'\nShift manager works - {datetime.datetime.now()}')
 
         # --------------------------------- debug settings ---------------------------------
         self.shift_id = 674
-        self.worker = [VITAL_USER_ID, "user"]
+        self.worker = [VITAL_USER_ID, "user", "picture"]
         self.current_shift_date = '2023-10-26'
         self.get_shift()
         # -----------------------------------------------------------------------------------

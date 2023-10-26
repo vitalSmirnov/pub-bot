@@ -83,7 +83,7 @@ class SpreadSheets:
                 self.sheets.values()
                 .get(
                     spreadsheetId=SHEETS_ID,
-                    range=f"Sheet2!A{worker_index}:B{worker_index}",
+                    range=f"Sheet2!A{worker_index}:C{worker_index}",
                 )
                 .execute()
             )
