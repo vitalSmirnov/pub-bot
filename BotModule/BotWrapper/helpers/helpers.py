@@ -1,6 +1,7 @@
 from pyrogram import filters
 
-from static.configuration.config import MAIN_USER_ID, WORKER_IDS
+from static.configuration.config import MAIN_USER_ID, WORKER_IDS, VITAL_USER_ID
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 conversations = {}
 users_state_data = {}
@@ -18,7 +19,15 @@ def state_filter(data):
 
 
 def auth_filter(_, __, query):
-    return query.from_user.id in [MAIN_USER_ID, *WORKER_IDS.values()]
+    return query.from_user.id in [MAIN_USER_ID, VITAL_USER_ID, *WORKER_IDS.values()]
+
+
+def non_auth_filter(_, __, query):
+    return query.from_user.id not in [MAIN_USER_ID, VITAL_USER_ID, *WORKER_IDS.values()]
+
+
+def admin_filter(_, __, query):
+    return query.from_user.id == VITAL_USER_ID
 
 
 def set_state(user_id, state):
@@ -42,3 +51,65 @@ def update_user_data(user_id, data):
         users_state_data[user_id] = data
     else:
         users_state_data[user_id].update(data)
+
+
+def keyboard(shift_id):
+    kb = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "Ввести данные", callback_data=f"input_data_{shift_id}"
+                )
+            ],
+        ]
+    )
+    return kb
+
+
+def all_user_keyboard():
+    kb = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "Кто на смене?", callback_data='who-on-shift'
+                ),
+                InlineKeyboardButton(
+                    "Работа бара", callback_data='is-shift-online'
+                )
+            ],
+        ]
+    )
+    return kb
+
+
+def private_user_keyboard():
+    kb = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "Кто на смене?", callback_data='who-on-shift'
+                ),
+                InlineKeyboardButton(
+                    "Работа бара", callback_data='is-shift-online'
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "Изменить работника на сегодня", callback_data='change_shift_worker'
+                )
+            ]
+        ]
+    )
+    return kb
+
+
+def select_worker_keyboard():
+    keyboard_buttons = []
+    worker_keys = list(WORKER_IDS.keys())
+    worker_values = list(WORKER_IDS.values())
+    for i in range(len(WORKER_IDS)):
+        button = [InlineKeyboardButton(worker_keys[i], callback_data=f'change_worker_callback_{worker_values[i]}')]
+        keyboard_buttons.append(button)
+
+    kb = InlineKeyboardMarkup(keyboard_buttons)
+    return kb

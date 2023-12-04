@@ -13,5 +13,19 @@ class Helpers:
         response = requests.get(
             shift_url, headers=self.headers, params=shift_params
         )
-        return response.json()
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
 
+    def send_service_message(self, bot, worker: {}, receiver_id: int, type: str):
+        if type == 'close':
+            bot.send_message(
+                receiver_id,
+                f"[{worker[1]}](tg://user?id={worker[0]}) закрыл(а) смену, ожидается внесение данных"
+            )
+        else:
+            bot.send_message(
+                receiver_id,
+                f"[{worker[1]}](tg://user?id={worker[0]}) открыл(а) смену",
+            )
