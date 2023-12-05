@@ -53,7 +53,7 @@ def update_user_data(user_id, data):
         users_state_data[user_id].update(data)
 
 
-def keyboard(shift_id):
+def close_shift_keyboard(shift_id):
     kb = InlineKeyboardMarkup(
         [
             [

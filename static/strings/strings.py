@@ -8,6 +8,7 @@ OPEN_SHIFT_ALERT = ""
 SHIFT_WORKER = ""
 SHIFT_KNOW = ""
 CHANGE_WORKER = ""
+UNDEFINED_BAR_STATUS = ""
 
 if os.path.exists("config.json"):
     with open("config.json", "r", encoding="utf-8") as json_conf:
@@ -28,3 +29,5 @@ if os.path.exists("config.json"):
 
         CHANGE_WORKER = strings.get("change_shift_worker_alert")
         WORKER_CHANGED_ALERT = strings.get("worker_have_changed_alert")
+
+        UNDEFINED_BAR_STATUS = strings.get("undefined_bar_status")

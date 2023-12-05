@@ -1,17 +1,19 @@
-from BotModule.bot import app
-from QuickRestoModule.quickResto import QuickResto
-from static.configuration.utils import spreadsheet, scheduler
+from pyrogram import idle
+
+from BotModule.bot import app, quick_integration
+import asyncio
+
+
+async def main():
+    await app.start()
+    asyncio.create_task(quick_integration())
+
+    await idle()
+
 
 if __name__ == "__main__":
-    quick_api = QuickResto(
-        app,
-        spreadsheet,
-    )
-    scheduler.add_job(quick_api.shift_manager, "interval", seconds=60)
-    scheduler.start()
-
     try:
-        app.run()
+        asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()
-
+        app.stop()
+        exit()

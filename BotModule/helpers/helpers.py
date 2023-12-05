@@ -1,5 +1,8 @@
 import datetime
 
+from BotModule.BotWrapper.helpers.helpers import close_shift_keyboard
+from static.strings.strings import OPEN_SHIFT_ALERT
+
 
 def message_handler(value: int):
     if value == 0:
@@ -45,3 +48,47 @@ def log_shift_data_compiler(shift):
         'totalCard': int(shift.get("totalCard")),
         'totalReturnCard': int(shift.get('totalReturnCard', 0)),
     }
+
+
+def user_data_comparer(shift, user_data):
+    # создание объекта для логгирования
+    log_data = log_shift_data_compiler(shift)
+    output_logging_data('----Quick resto data', log_data)
+
+    quick_data_cash = int(shift.get("closingEncashment")) - int(shift.get('totalReturnCash', 0))
+    quick_data_card = int(shift.get("totalCard")) - int(shift.get('totalReturnCard', 0))
+
+    if abs(int(user_data[0])) - quick_data_cash < 50:
+        # если разница в наличных в пределах 50 рублей (монетки) считаем, что всё окей
+        return int(user_data[1]) - quick_data_card
+    else:
+        # если разница в наличных больше 50 рублей (бумажки) злимся и сообщаем
+        return int(user_data[0]) - quick_data_cash + (int(user_data[1]) - quick_data_card)
+
+
+async def send_service_message(bot, receiver_id: int, type: str):
+    print(bot.current_worker)
+    if type == 'close':
+        await bot.send_message(
+            receiver_id,
+            f"[{bot.current_worker.get('name')}](tg://user?id={bot.current_worker.get('id')}) закрыл(а) смену, ожидается внесение данных"
+        )
+    else:
+        await bot.send_message(
+            receiver_id,
+            f"[{bot.current_worker.get('name')}](tg://user?id={bot.current_worker.get('id')}) открыл(а) смену"
+        )
+
+
+async def send_worker_alerts(bot, type: str, shift_id: int = 0):
+    if type == 'close':
+        await bot.send_message(
+            bot.current_worker.get('id'),
+            f"Вы закрыли смену"
+        )
+    else:
+        await bot.send_message(
+            bot.current_worker.get('id'),
+            f"Вы открыли смену",
+            reply_markup=close_shift_keyboard(shift_id)
+        )

@@ -9,7 +9,7 @@ class Helpers:
             "Authorization": "Basic dm4zNjI6SlJXOEFUNXg=",
         }
 
-    def send_get_request(self, shift_params, shift_url):
+    async def send_get_request(self, shift_params, shift_url):
         response = requests.get(
             shift_url, headers=self.headers, params=shift_params
         )

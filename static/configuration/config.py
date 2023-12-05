@@ -9,6 +9,7 @@ MAIN_USER_ID = 0
 VITAL_USER_ID = 0
 WORKER_IDS = {}
 WORKER_IDS_KEY_SWAPPEN = {}
+DATE_CELLS_INDEXES = []
 
 if os.path.exists("config.json"):
     with open("config.json", "r", encoding="utf-8") as json_conf:
@@ -23,6 +24,7 @@ if os.path.exists("config.json"):
 
         SHEETS_ID = sheets.get("id")
         SCOPES = sheets.get("scopes")
+        DATE_CELLS_INDEXES = sheets.get("dates_cells")
 
         MAIN_USER_ID = users.get("main_user")
         VITAL_USER_ID = users.get("vital_user")

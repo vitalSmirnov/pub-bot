@@ -6,3 +6,5 @@ class ClientWrapper(Client):
         super().__init__(*args, **kwargs)
         self.shifts = {}
         self.info_delete_message = {}
+        self.current_worker = {}
+        self.current_shift_status = ''
