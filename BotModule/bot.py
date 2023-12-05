@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 
 from BotModule.BotWrapper.helpers.pyrothrottle.filters.throttle import Throttle
@@ -61,7 +62,7 @@ quick = QuickResto()
 async def quick_integration():
     while True:
         shift = await quick.shift_manager()
-        worker = await spreadsheet.find_user_by_date(str(datetime.date.today()))
+        worker = spreadsheet.find_user_by_date(str(datetime.date.today()))
         app.current_worker = {'id': worker[0], 'name': worker[1], 'photo_url': worker[2]}
 
         app.current_shift_status = shift.get('status')
@@ -75,6 +76,7 @@ async def quick_integration():
             await send_service_message(app, VITAL_USER_ID, 'open')
             # await send_service_message(app, MAIN_USER_ID, 'open')
             # await send_worker_alerts(app, 'open')
+        await asyncio.sleep(60)
 
 
 async def send_shift_data(worker_id, shift_id, data):

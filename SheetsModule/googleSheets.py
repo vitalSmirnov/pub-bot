@@ -74,16 +74,16 @@ class SpreadSheets:
         except HttpError as error:
             print(error)
 
-    async def find_user_by_date(self, date_time):
+    def find_user_by_date(self, date_time):
         try:
             worker_index = 0
-            date_row = await (
+            date_row = (
                 self.sheets.values()
                 .get(spreadsheetId=SHEETS_ID, range=f"Sheet2!{DATE_CELLS_INDEXES[0]}2:{DATE_CELLS_INDEXES[-1]}2")
                 .execute()
             )
             date_index = searcher(date_row.get("values")[0], date_time)
-            result = await (
+            result = (
                 self.sheets.values()
                 .get(
                     spreadsheetId=SHEETS_ID,
@@ -95,7 +95,7 @@ class SpreadSheets:
                 if result.get('values')[i] == ['1']:
                     worker_index = i + 3
 
-            worker_object = await (
+            worker_object = (
                 self.sheets.values()
                 .get(
                     spreadsheetId=SHEETS_ID,
